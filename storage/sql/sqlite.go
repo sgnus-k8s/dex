@@ -1,6 +1,3 @@
-//go:build cgo
-// +build cgo
-
 package sql
 
 import (
@@ -8,7 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 
-	sqlite3 "github.com/mattn/go-sqlite3"
+	"modernc.org/sqlite"
+	sqlite3 "modernc.org/sqlite/lib"
 
 	"github.com/dexidp/dex/storage"
 )
@@ -29,7 +27,7 @@ func (s *SQLite3) Open(logger *slog.Logger) (storage.Storage, error) {
 }
 
 func (s *SQLite3) open(logger *slog.Logger) (*conn, error) {
-	db, err := sql.Open("sqlite3", s.File)
+	db, err := sql.Open("sqlite", s.File)
 	if err != nil {
 		return nil, err
 	}
@@ -38,11 +36,11 @@ func (s *SQLite3) open(logger *slog.Logger) (*conn, error) {
 	// attempting concurrent access will have to wait
 	db.SetMaxOpenConns(1)
 	errCheck := func(err error) bool {
-		sqlErr, ok := err.(sqlite3.Error)
+		sqlErr, ok := err.(*sqlite.Error)
 		if !ok {
 			return false
 		}
-		return sqlErr.ExtendedCode == sqlite3.ErrConstraintPrimaryKey
+		return sqlErr.Code() == sqlite3.SQLITE_CONSTRAINT_PRIMARYKEY
 	}
 
 	c := &conn{db, &flavorSQLite3, logger, errCheck}

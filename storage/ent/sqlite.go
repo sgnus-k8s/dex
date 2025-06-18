@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"entgo.io/ent/dialect/sql"
-	_ "github.com/mattn/go-sqlite3" // Register sqlite driver.
+	_ "modernc.org/sqlite" // Register sqlite driver.
 
 	"github.com/dexidp/dex/storage"
 	"github.com/dexidp/dex/storage/ent/client"

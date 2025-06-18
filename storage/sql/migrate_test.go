@@ -8,7 +8,7 @@ import (
 	"log/slog"
 	"testing"
 
-	sqlite3 "github.com/mattn/go-sqlite3"
+	sqlite3 "modernc.org/sqlite"
 )
 
 func TestMigrate(t *testing.T) {
